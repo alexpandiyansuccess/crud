@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\PostResource;
+use App\Http\Requests\StoreAdminPostRequest;
+use App\Models\Admin;
 use Illuminate\Http\Request;
 
-use App\Models\Post;
-
-class PostController extends Controller
+class AdminController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,11 +15,9 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::paginate(10);
-
-        return PostResource::collection($posts);
-
-        
+        return response()->json(
+            Admin::paginate()
+        );
     }
 
     /**
@@ -30,9 +27,7 @@ class PostController extends Controller
      */
     public function create()
     {
-        
-
-
+        //
     }
 
     /**
@@ -41,17 +36,15 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreAdminPostRequest $request)
     {
-        $post = new Post();
-        
-        $post->title = $request->title;
-        $post->body = $request->body;
+        // dd($request->all(),$request->validated());
 
-        if($post->save()){
-            return new PostResource($post);
-        }
+        Admin::create($request->validated());
 
+            return response()->json([
+            'message' => 'created successfully !.'
+            ]);
     }
 
     /**
@@ -62,9 +55,10 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        $post = Post::findOrFail($id);
-
-        return new PostResource($post);
+        // dd($id);
+        $post = Admin::findOrFail($id);
+        // return new AdminController($post);
+        return $post;
     }
 
     /**
@@ -87,14 +81,17 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $post = Post::findOrFail($id);
-        $post->title = $request ->title;
-        $post->body = $request ->body;
+        $post = Admin::findOrFail($id);
+        $post->name = $request->name;
+        $post->email = $request->email;
+        $post->phone = $request->phone;
+
 
         if($post->save()){
-            return new PostResource($post);
+            return response()->json([
+                'message'=>"Updated Successfully"
+                ]);
         }
-
     }
 
     /**
@@ -105,10 +102,12 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        $post = Post::findOrFail($id);
+        $post = Admin::findOrFail($id);
 
         if($post->delete()){
-            return new PostResource($post);
+            return response()->json([
+            'message'=>"deleted successfully"
+            ]);
         }
     }
 }
