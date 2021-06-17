@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\PostController;
+use App\Http\Controllers\AdminController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,18 +15,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/post',[PostController::class,'index']);
-Route::post('/post',[PostController::class,'store']);
-Route::get('/posts/{id}',[PostController::class,'show']);
-Route::patch('/posts/{id}',[PostController::class,'update']);
-Route::delete('/posts/{id}',[PostController::class,'destroy']);
+Route::get('/new',[AdminController::class,'index']);
+Route::post('/new', [AdminController::class,'store']);
+Route::delete('/new/{id}',[AdminController::class,'destroy']);
+Route::get('/news/{id}',[AdminController::class,'show']);
 
-Route::get('/send-mail',[SendMailController::class, 'index'])->name('send.mail.index');
-
-
+Route::patch('/news/{id}',[AdminController::class,'update']);
 
 
